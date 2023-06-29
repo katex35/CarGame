@@ -23,7 +23,8 @@ public class GamePanel extends JPanel implements Runnable {
     Thread gameThread;
     Car car;
     Car crashCar;
-    public GamePanel(){
+
+    public GamePanel() {
 
         setFocusable(true);
         setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
@@ -34,16 +35,17 @@ public class GamePanel extends JPanel implements Runnable {
 
     }
 
-    public void createCrashCar(){
+    public void createCrashCar() {
         crashCar = new Car(this, "random");
         add(crashCar);
     }
-    public void createNormalCar(){
+
+    public void createNormalCar() {
         car = new Car(this, "main");
         add(car);
     }
 
-    private void gameStart(){
+    private void gameStart() {
         gameStarted = true;
 
 //        createNormalCar();
@@ -68,11 +70,11 @@ public class GamePanel extends JPanel implements Runnable {
 
         g2d.setStroke(new BasicStroke(1));
         g2d.setColor(new Color(0x39C520));
-        g2d.fillRect(LEFT_RIGHT_SCREEN_GAP,0, GREEN_PART_WIDTH, SCREEN_HEIGHT);
-        g2d.fillRect(SCREEN_WIDTH-(GREEN_PART_WIDTH + LEFT_RIGHT_SCREEN_GAP),0, GREEN_PART_WIDTH, SCREEN_HEIGHT);
+        g2d.fillRect(LEFT_RIGHT_SCREEN_GAP, 0, GREEN_PART_WIDTH, SCREEN_HEIGHT);
+        g2d.fillRect(SCREEN_WIDTH - (GREEN_PART_WIDTH + LEFT_RIGHT_SCREEN_GAP), 0, GREEN_PART_WIDTH, SCREEN_HEIGHT);
 
         g2d.setColor(new Color(0xFF444242, true));
-        g2d.fillRect(LEFT_RIGHT_SCREEN_GAP*2, 0, GREY_PART_WIDTH, SCREEN_HEIGHT);
+        g2d.fillRect(LEFT_RIGHT_SCREEN_GAP * 2, 0, GREY_PART_WIDTH, SCREEN_HEIGHT);
         drawRoadLines(g);
 
         g2d.setStroke(new BasicStroke(1));
@@ -85,71 +87,72 @@ public class GamePanel extends JPanel implements Runnable {
         Graphics2D g2d = (Graphics2D) g;
         g2d.setStroke(new BasicStroke(2));
         g2d.setColor(new Color(0xFFFFFF));
-        while(whiteLineY < SCREEN_HEIGHT){
-            if(whiteLineYMultiplier-70 >= 0){
-                g2d.drawLine(whiteLineX, 0, whiteLineX, whiteLineYMultiplier-50);
-                g2d.drawLine(whiteLineX*2, 0, whiteLineX*2, whiteLineYMultiplier-50);
+        while (whiteLineY < SCREEN_HEIGHT) {
+            if (whiteLineYMultiplier - 70 >= 0) {
+                g2d.drawLine(whiteLineX, 0, whiteLineX, whiteLineYMultiplier - 50);
+                g2d.drawLine(whiteLineX * 2, 0, whiteLineX * 2, whiteLineYMultiplier - 50);
             }
-            g2d.drawLine(whiteLineX, whiteLineY, whiteLineX, whiteLineY+30);
-            g2d.drawLine(whiteLineX*2, whiteLineY, whiteLineX*2, whiteLineY+30);
-            whiteLineY+=80;
+            g2d.drawLine(whiteLineX, whiteLineY, whiteLineX, whiteLineY + 30);
+            g2d.drawLine(whiteLineX * 2, whiteLineY, whiteLineX * 2, whiteLineY + 30);
+            whiteLineY += 80;
         }
         whiteLineY = 0;
 
     }
 
-    public void moveRoadLines(){
-        whiteLineYMultiplier+= 3;
-        if(whiteLineYMultiplier > 80){
+    public void moveRoadLines() {
+        whiteLineYMultiplier += 3;
+        if (whiteLineYMultiplier > 80) {
             whiteLineYMultiplier = 0;
         }
         whiteLineY = whiteLineYMultiplier;
     }
 
-    public void update(){
-        crashCar.setCarY( crashCar.getCarY() + crashCarSpeed );
+    public void update() {
+        crashCar.setCarY(crashCar.getCarY() + crashCarSpeed);
         crashCar.setLocation(crashCar.getCarX(), crashCar.getCarY());
 
         car.setLocation(car.getCarX(), car.getCarY());
 
         //System.out.println("crashCar Y: " + crashCar.getCarY() );
-        if(crashCar.getCarY() >= SCREEN_HEIGHT){
+        if (crashCar.getCarY() >= SCREEN_HEIGHT) {
             String carType = crashCar.getRandomCarType();
             ImageIcon carImage = new ImageIcon(new ImageIcon(carType).getImage().getScaledInstance(CAR_WIDTH, CAR_HEIGHT, Image.SCALE_DEFAULT));
             crashCar.setIcon(carImage);
             int randomX = crashCar.getRandomX();
-            crashCar.setCarX(randomX ,"random");
+            crashCar.setCarX(randomX, "random");
             crashCar.setCarY(-CAR_HEIGHT);
             crashCar.setLocation(randomX, crashCar.getCarY());
         }
     }
 
-    public void checkCollision(){
-        if(crashCar == null)
+    public void checkCollision() {
+        if (crashCar == null)
             return;
         Rectangle rectB = crashCar.getBounds();
 
         Rectangle result = SwingUtilities.computeIntersection(car.getX(), car.getY(), car.getWidth(), car.getHeight(), rectB);
 
-        if (result.getWidth() > 0 && result.getHeight() > 0){
+        if (result.getWidth() > 0 && result.getHeight() > 0) {
             gameStarted = false;
         }
     }
 
-    public void millSecCalculator(){
+    public void millSecCalculator() {
         if (millSec <= 10)
             return;
         totalMillSec += millSec;
-        if(totalMillSec >= 1000){
+        if (totalMillSec >= 1000) {
             totalMillSec = 0;
             millSec--;
             if (millSec == 23 || millSec == 20 || millSec == 17 || millSec == 14 || millSec == 11)
-                crashCarSpeed +=1;
+                crashCarSpeed += 1;
         }
     }
+
     @Override
     public void run() {
-        while(gameStarted){
+        while (gameStarted) {
             try {
                 sleep(millSec);
             } catch (InterruptedException e) {

@@ -3,7 +3,8 @@ import java.awt.event.KeyListener;
 
 public class CarHandler implements KeyListener {
     GamePanel panel;
-    public CarHandler(GamePanel panel){
+
+    public CarHandler(GamePanel panel) {
         this.panel = panel;
     }
 
@@ -14,9 +15,10 @@ public class CarHandler implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
-        if(e.getKeyCode() == KeyEvent.VK_RIGHT){
+        if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
             panel.car.setCarX(15);
-        }if(e.getKeyCode() == KeyEvent.VK_LEFT){
+        }
+        if (e.getKeyCode() == KeyEvent.VK_LEFT) {
             panel.car.setCarX(-15);
         }
     }

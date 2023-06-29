@@ -11,7 +11,7 @@ public class StartPanel extends JPanel {
     JButton startButton;
     JFrame frame;
 
-    public StartPanel(JFrame frame){
+    public StartPanel(JFrame frame) {
         this.frame = frame;
 
         //setFocusable(true);
@@ -39,29 +39,30 @@ public class StartPanel extends JPanel {
 
     }
 
-    public void delete(){
+    public void delete() {
         revalidate();
         frame.remove(this);
         frame.add(new GamePanel());
         setFocusable(true);
     }
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         draw(g);
-        startButton.setBounds(225,350,150,30);
+        startButton.setBounds(225, 350, 150, 30);
     }
 
     private void draw(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
-        g2d.setRenderingHint (RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
         g2d.setFont(new Font("Ariel Rounded MT", Font.BOLD, 60));
         FontMetrics fm = getFontMetrics(g2d.getFont());
-        g2d.drawString("Car Game", (SCREEN_WIDTH - fm.stringWidth("Car Game") )/2 , g.getFont().getSize()+140);
+        g2d.drawString("Car Game", (SCREEN_WIDTH - fm.stringWidth("Car Game")) / 2, g.getFont().getSize() + 140);
 
         g2d.setFont(new Font("Ariel Rounded MT", Font.ITALIC, 10));
         fm = getFontMetrics(g2d.getFont());
-        g2d.drawString("by Gökay", (SCREEN_WIDTH - fm.stringWidth("by Gökay") )/2 , g.getFont().getSize()+210);
+        g2d.drawString("by Gökay", (SCREEN_WIDTH - fm.stringWidth("by Gökay")) / 2, g.getFont().getSize() + 210);
     }
 }

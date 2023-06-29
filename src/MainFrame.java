@@ -1,7 +1,7 @@
 import javax.swing.*;
 
 public class MainFrame extends JFrame {
-    public MainFrame(){
+    public MainFrame() {
 
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setTitle("Game");
