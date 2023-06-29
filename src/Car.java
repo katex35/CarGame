@@ -12,7 +12,7 @@ public class Car extends JLabel {
 
     public Car(GamePanel panel, String type){
         if(type.equals("main")){
-            this.carX = 225;
+            this.carX = 265;
             this.carY = 800;
             carImage = new ImageIcon(new ImageIcon("assets/Audi.png").getImage().getScaledInstance(CAR_WIDTH, CAR_HEIGHT, Image.SCALE_DEFAULT));
 
@@ -23,7 +23,6 @@ public class Car extends JLabel {
             String carType = getRandomCarType();
 
             carImage = new ImageIcon(new ImageIcon(carType).getImage().getScaledInstance(CAR_WIDTH, CAR_HEIGHT, Image.SCALE_DEFAULT));
-            System.out.println(carType);
         }
         this.panel = panel;
         setIcon(carImage);
@@ -35,11 +34,11 @@ public class Car extends JLabel {
         int randomNumber = (int) ( r.nextFloat() * 3  + 1 );
         int xCord;
         if(randomNumber == 1){
-            xCord = 75;
+            xCord = 85;
         }else if (randomNumber == 2){
-            xCord = 225;
+            xCord = 265;
         }else{
-            xCord = 400;
+            xCord = 435;
         }
         return xCord;
 

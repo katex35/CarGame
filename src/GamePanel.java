@@ -46,7 +46,9 @@ public class GamePanel extends JPanel implements Runnable {
     private void gameStart(){
         gameStarted = true;
 
-        createNormalCar();
+//        createNormalCar();
+        car = new Car(this, "main");
+        add(car);
         createCrashCar();
 
         gameThread = new Thread(this);
@@ -143,7 +145,6 @@ public class GamePanel extends JPanel implements Runnable {
             millSec--;
             if (millSec == 23 || millSec == 20 || millSec == 17 || millSec == 14 || millSec == 11)
                 crashCarSpeed +=1;
-            System.out.println(millSec);
         }
     }
     @Override
