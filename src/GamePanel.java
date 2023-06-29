@@ -1,6 +1,5 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.geom.Area;
 
 import static java.lang.Thread.sleep;
 
@@ -13,10 +12,11 @@ public class GamePanel extends JPanel implements Runnable {
     final int ROAD_LEFT_BORDER_X = LEFT_RIGHT_SCREEN_GAP + GREEN_PART_WIDTH;
     final int ROAD_RIGHT_BORDER_X = LEFT_RIGHT_SCREEN_GAP + GREEN_PART_WIDTH + GREY_PART_WIDTH;
     static final int whiteLineX = GREEN_PART_WIDTH + GREEN_PART_WIDTH + 150;
-    static final int CAR_WIDTH = 150;
+    static final int CAR_WIDTH = 75;
     static final int CAR_HEIGHT = 150;
-    int xTemp;
-    int milSec = 25;
+    int crashCarSpeed = 5;
+    int totalMillSec;
+    int millSec = 25;
     int whiteLineY = 0;
     int whiteLineYMultiplier = 0;
     boolean gameStarted = false;
@@ -28,41 +28,29 @@ public class GamePanel extends JPanel implements Runnable {
         setFocusable(true);
         setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
 
-        car = new Car(this, "main");
-        crashCar = new Car(this, "random");
-
-        add(car);
-        add(crashCar);
         addKeyListener(new CarHandler(this));
 
         gameStart();
 
     }
 
-    public void setCarX(int x){
-//        if(carX+(CAR_WIDTH/2)+(CAR_WIDTH/4) > LEFT_RIGHT_SCREEN_GAP + GREEN_PART_WIDTH + GREY_PART_WIDTH){
-//            System.out.println("sağa çarpar");
-//            //this.carX = x+(CAR_WIDTH/6)+(CAR_WIDTH/6);
-//            return;
-//        }if(carX+CAR_WIDTH/4 < LEFT_RIGHT_SCREEN_GAP + GREEN_PART_WIDTH){
-//            System.out.println("sola çarpar");
-//            //this.carX = x+(CAR_WIDTH/6)+(CAR_WIDTH/6);
-//            return;
-//        }
-//        this.carX+= x;
-//        this.carX = x;
-    }
-
     public void createCrashCar(){
         crashCar = new Car(this, "random");
+        add(crashCar);
     }
+    public void createNormalCar(){
+        car = new Car(this, "main");
+        add(car);
+    }
+
     private void gameStart(){
         gameStarted = true;
 
+        createNormalCar();
+        createCrashCar();
+
         gameThread = new Thread(this);
         gameThread.start();
-
-        System.out.println("313131");
 
     }
 
@@ -115,20 +103,22 @@ public class GamePanel extends JPanel implements Runnable {
         }
         whiteLineY = whiteLineYMultiplier;
     }
+
     public void update(){
-        if(crashCar != null){
-            crashCar.setCarY( crashCar.getCarY() + 5 );
-            crashCar.setLocation(crashCar.getCarX(), crashCar.getCarY());
-        }
+        crashCar.setCarY( crashCar.getCarY() + crashCarSpeed );
+        crashCar.setLocation(crashCar.getCarX(), crashCar.getCarY());
 
         car.setLocation(car.getCarX(), car.getCarY());
 
         //System.out.println("crashCar Y: " + crashCar.getCarY() );
         if(crashCar.getCarY() >= SCREEN_HEIGHT){
-            crashCar = null;
-            crashCar = new Car(this, "random");
-            System.out.println("oluşituye");
-//            System.out.println(crashCar.getCarY());
+            String carType = crashCar.getRandomCarType();
+            ImageIcon carImage = new ImageIcon(new ImageIcon(carType).getImage().getScaledInstance(CAR_WIDTH, CAR_HEIGHT, Image.SCALE_DEFAULT));
+            crashCar.setIcon(carImage);
+            int randomX = crashCar.getRandomX();
+            crashCar.setCarX(randomX ,"random");
+            crashCar.setCarY(-CAR_HEIGHT);
+            crashCar.setLocation(randomX, crashCar.getCarY());
         }
     }
 
@@ -140,36 +130,38 @@ public class GamePanel extends JPanel implements Runnable {
         Rectangle result = SwingUtilities.computeIntersection(car.getX(), car.getY(), car.getWidth(), car.getHeight(), rectB);
 
         if (result.getWidth() > 0 && result.getHeight() > 0){
-            System.out.print("çarptı");
             gameStarted = false;
         }
     }
 
+    public void millSecCalculator(){
+        if (millSec <= 10)
+            return;
+        totalMillSec += millSec;
+        if(totalMillSec >= 1000){
+            totalMillSec = 0;
+            millSec--;
+            if (millSec == 23 || millSec == 20 || millSec == 17 || millSec == 14 || millSec == 11)
+                crashCarSpeed +=1;
+            System.out.println(millSec);
+        }
+    }
     @Override
     public void run() {
         while(gameStarted){
             try {
-                //sleep(milSec);
-                sleep(25);
+                sleep(millSec);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
 
+            millSecCalculator();
             moveRoadLines();
-
             checkCollision();
             update();
-//            xTemp++;
-//            if(xTemp > 50 - milSec){
-//                milSec--;
-//                xTemp = 0;
-//            }
-            if(crashCar != null){
-                System.out.println("hala var");
-            }
+
             repaint();
         }
-        System.out.println("bitti");
     }
 
 
